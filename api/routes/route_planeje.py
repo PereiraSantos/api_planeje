@@ -95,3 +95,54 @@ def delete_dado(dado_id):
         return jsonify({'error': str(e)}), 500
     finally:
         db.close()
+
+def create_tables():
+    try:
+        db = db_config.get_db()
+        cursor = db.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS `user` (`id` INTEGER NOT NULL, `login` TEXT NOT NULL, `password` TEXT NOT NULL, `keep_logged` INTEGER NOT NULL, PRIMARY KEY (`id`))')
+        db.commit()
+        return jsonify({'message': 'tabela criada com sucesso!'})
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()
+
+def register_user(request: Request):
+    if request.method == 'POST':
+        password = request.json.get('password')
+        login = request.json.get('login')
+
+        if not password or not login:
+            return jsonify({'error': 'password e login são obrigatórios'}), 400
+
+        try:
+            db = db_config.get_db()
+            cursor = db.cursor()
+            cursor.execute('INSERT INTO user (password, login) VALUES (?, ?)', (password, login))
+            db.commit()
+            return jsonify({'message': 'Dado gravado com sucesso!'}), 201
+        except sqlite3.Error as e:
+            return jsonify({'error': str(e)}), 500
+        finally:
+            db.close()
+    elif request.method == 'GET':
+        return home()
+    
+def auth(request: Request):
+    password = request.json.get('password')
+    login = request.json.get('login')
+
+    if not password or not login:
+        return jsonify({'error': 'password e login são obrigatórios'}), 400
+
+    try:
+        db = db_config.get_db()
+        cursor = db.cursor()
+        cursor.execute('select * from user WHERE password = ? and login = ?', (password, login))
+        db.commit()
+        return jsonify({'token': 'jkeedbewbwbfb weifd'})
+    except sqlite3.Error as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        db.close()

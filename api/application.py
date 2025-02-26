@@ -33,5 +33,18 @@ def update_dado():
 def delete_dado(dado_id):
     return route_planeje.delete_dado(dado_id=dado_id)
 
+@app.route('/dados/createtable', methods=['GET'])
+def create_tables():
+     return route_planeje.create_tables()
+
+@app.route('/dados/register/user', methods=['POST'])
+def register_user():
+        return route_planeje.register_user(request=request)
+
+@app.route('/dados/user/auth', methods=['POST'])
+def auth_user():
+        return route_planeje.auth(request=request)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
