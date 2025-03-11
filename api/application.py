@@ -1,6 +1,6 @@
 from flask import Flask, request
 from database_config import db_config
-from routes import route_user, route_revision
+from routes import route_user, route_revision, route_revision_date
 
 app = Flask(__name__)
 
@@ -72,6 +72,32 @@ def update_revision():
 @app.route('/revision/delete/<int:id>', methods=['DELETE'])
 def delete_revision(id):
     return route_revision.delete_revision(id=id)
+
+# DATE REVISION
+
+@app.route('/revision/date/createtable', methods=['GET'])
+def create_tables_revision_date():
+    return route_revision_date.create_tables()
+
+@app.route('/revision/date', methods=['POST'])
+def post_revision_date():
+    return route_revision_date.insert_revision_date(request=request)
+
+@app.route('/revision/date', methods=['GET'])
+def get_revision_date():
+    return route_revision_date.get_revision_date()
+
+@app.route('/revision/date/<int:id>', methods=['GET'])
+def get_revision_date_id(id):
+    return route_revision_date.get_revision_date_id(id=id)
+
+@app.route('/revision/date/update', methods=['PUT'])
+def update_revision_date():
+    return route_revision_date.update_revision_date(request=request)
+
+@app.route('/revision/date/delete/<int:id>', methods=['DELETE'])
+def delete_revision_date(id):
+    return route_revision_date.delete_revision_date(id=id)
 
 
 if __name__ == '__main__':
