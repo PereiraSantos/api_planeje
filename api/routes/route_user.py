@@ -4,8 +4,6 @@ import sqlite3
 
 def home():
     return """
-    <h1>Bem-vindo à API CRUD com Flask</h1>
-    <p>Esta API permite que você execute operações CRUD (Create, Read, Update, Delete) em uma base de dados SQLite.</p>
     <p>Rotas disponíveis:</p>
     <ul>
         <li>POST /dados - Adiciona um novo dado. Envie um JSON com os campos 'nome' e 'idade'.</li>
