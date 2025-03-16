@@ -15,20 +15,18 @@ def home():
     </ul>
     """
 
-def insert_annotation(request: Request):
+def insert_quiz(request: Request):
     if request.method == 'POST':
-        title = request.json.get('title')
-        text = request.json.get('text')
-        dateText = request.json.get('dateText')
-        idRevision = request.json.get('idRevision')
-       
-        if not title or not text or not dateText or not idRevision:
-            return jsonify({'error': 'title, text, dateText e idRevision são obrigatórios'}), 400
+        topic = request.json.get('topic')
+        description = request.json.get('description')
+
+        if not topic or not description:
+            return jsonify({'error': 'topic e description são obrigatórios'}), 400
 
         try:
             db = db_config.get_db()
             cursor = db.cursor()
-            cursor.execute('INSERT INTO annotation (title, text, date_text, id_revision) VALUES (?, ?, ?, ? )', (title, text, dateText, idRevision))
+            cursor.execute('INSERT INTO quiz (topic, description) VALUES (?, ?)', (topic, description))
             db.commit()
             return jsonify({'message': 'Dado gravado com sucesso!'}), 201
         except sqlite3.Error as e:
@@ -38,11 +36,11 @@ def insert_annotation(request: Request):
     elif request.method == 'GET':
         return home()
 
-def get_annotation():
+def get_quiz():
     try:
         db = db_config.get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT * FROM annotation')
+        cursor.execute('SELECT * FROM quiz')
         dados = cursor.fetchall()
         return jsonify([dict(row) for row in dados])
     except sqlite3.Error as e:
@@ -50,11 +48,11 @@ def get_annotation():
     finally:
         db.close()
 
-def get_annotation_id(id):
+def get_quiz_id(id):
     try:
         db = db_config.get_db()
         cursor = db.cursor()
-        cursor.execute('SELECT * FROM annotation WHERE id = ?', (id,))
+        cursor.execute('SELECT * FROM quiz WHERE id = ?', (id,))
         dado = cursor.fetchone()
         if dado:
             return jsonify(dict(dado))
@@ -66,20 +64,18 @@ def get_annotation_id(id):
         db.close()
 
 
-def update_annotation(request: Request):
+def update_quiz(request: Request):
     id = request.json.get('id')
-    title = request.json.get('title')
-    text = request.json.get('text')
-    dateText = request.json.get('dateText')
-    idRevision = request.json.get('idRevision')
+    topic = request.json.get('topic')
+    description = request.json.get('description')
 
-    if not title or not text or not dateText or not idRevision or not id:
-        return jsonify({'error': 'title, text, dateText, idRevision e id são obrigatórios'}), 400
+    if not topic or not description or not id:
+        return jsonify({'error': 'topic, description e id são obrigatórios'}), 400
 
     try:
         db = db_config.get_db()
         cursor = db.cursor()
-        cursor.execute('UPDATE annotation SET title = ?, text = ? , date_text = ?, id_revision = ? WHERE id = ?', (title, text, dateText, idRevision, id))
+        cursor.execute('UPDATE quiz SET topic = ?, descrriptiopn = ? WHERE id = ?', (topic, description, id))
         db.commit()
         return jsonify({'message': 'Dado atualizado com sucesso!'})
     except sqlite3.Error as e:
@@ -87,11 +83,11 @@ def update_annotation(request: Request):
     finally:
         db.close()
 
-def delete_annotation(id):
+def delete_quiz(id):
     try:
         db = db_config.get_db()
         cursor = db.cursor()
-        cursor.execute('DELETE FROM annotation WHERE id = ?', (id,))
+        cursor.execute('DELETE FROM quiz WHERE id = ?', (id,))
         db.commit()
         return jsonify({'message': 'Dado deletado com sucesso!'})
     except sqlite3.Error as e:
@@ -103,7 +99,7 @@ def create_tables():
     try:
         db = db_config.get_db()
         cursor = db.cursor()
-        cursor.execute('CREATE TABLE IF NOT EXISTS `annotation` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `title` TEXT, `text` TEXT, `date_text` TEXT, `id_revision` INTEGER)');
+        cursor.execute('CREATE TABLE IF NOT EXISTS `quiz` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `topic` TEXT, `description` TEXT)');
 
         db.commit()
         return jsonify({'message': 'tabela criada com sucesso!'})
