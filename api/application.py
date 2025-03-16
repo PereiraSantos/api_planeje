@@ -1,6 +1,6 @@
 from flask import Flask, request
 from database_config import db_config
-from routes import route_user, route_revision, route_revision_date
+from routes import route_user, route_revision, route_revision_date, route_annotation
 
 app = Flask(__name__)
 
@@ -99,6 +99,31 @@ def update_revision_date():
 def delete_revision_date(id):
     return route_revision_date.delete_revision_date(id=id)
 
+# ANNOTATION
+
+@app.route('/annotation/createtable', methods=['GET'])
+def create_tables_annotation():
+    return route_annotation.create_tables()
+
+@app.route('/annotation', methods=['POST'])
+def post_annotation():
+    return route_annotation.insert_annotation(request=request)
+
+@app.route('/annotation', methods=['GET'])
+def get_annotation():
+    return route_annotation.get_annotation()
+
+@app.route('/annotation/<int:id>', methods=['GET'])
+def get_annotation_id(id):
+    return route_annotation.get_annotation_id(id=id)
+
+@app.route('/annotation/update', methods=['PUT'])
+def update_annotation():
+    return route_annotation.update_annotation(request=request)
+
+@app.route('/annotation/delete/<int:id>', methods=['DELETE'])
+def delete_annotation(id):
+    return route_annotation.delete_annotation(id=id)
 
 if __name__ == '__main__':
     app.run(debug=True)
