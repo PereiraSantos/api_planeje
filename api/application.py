@@ -1,6 +1,6 @@
 from flask import Flask, request
 from database_config import db_config
-from routes import route_user, route_revision, route_revision_date, route_annotation, route_quiz
+from routes import route_user, route_revision, route_revision_date, route_annotation, route_quiz, route_question
 
 app = Flask(__name__)
 
@@ -151,6 +151,31 @@ def update_quiz():
 def delete_quiz(id):
     return route_quiz.delete_quiz(id=id)
 
+# QUESTION
+
+@app.route('/question/createtable', methods=['GET'])
+def create_tables_question():
+    return route_question.create_tables()
+
+@app.route('/question', methods=['POST'])
+def post_question():
+    return route_question.insert_question(request=request)
+
+@app.route('/question', methods=['GET'])
+def get_question():
+    return route_question.get_question()
+
+@app.route('/question/<int:id>', methods=['GET'])
+def get_question_id(id):
+    return route_question.get_question_id(id=id)
+
+@app.route('/question/update', methods=['PUT'])
+def update_question():
+    return route_question.update_question(request=request)
+
+@app.route('/question/delete/<int:id>', methods=['DELETE'])
+def delete_question(id):
+    return route_question.delete_question(id=id)
 
 if __name__ == '__main__':
     app.run(debug=True)
