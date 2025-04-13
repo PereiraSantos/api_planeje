@@ -1,6 +1,6 @@
 from flask import Flask, request
 from database_config import db_config
-from routes import route_user, route_revision, route_revision_date, route_annotation, route_quiz, route_question
+from routes import route_user, route_revision, route_revision_date, route_annotation, route_quiz, route_question, route_revision_quiz
 
 app = Flask(__name__)
 
@@ -176,6 +176,33 @@ def update_question():
 @app.route('/question/delete/<int:id>', methods=['DELETE'])
 def delete_question(id):
     return route_question.delete_question(id=id)
+
+# REVISION QUIZ
+
+@app.route('/revision/quiz/createtable', methods=['GET'])
+def create_tables_revision_quiz():
+    return route_revision_quiz.create_tables()
+
+@app.route('/revision/quiz', methods=['POST'])
+def post_revision_quiz():
+    return route_revision_quiz.insert_revision_quiz(request=request)
+
+@app.route('/revision/quiz', methods=['GET'])
+def get_revision_quiz():
+    return route_revision_quiz.get_revision_quiz()
+
+@app.route('/revision/quiz/<int:id>', methods=['GET'])
+def get_revision_quiz_id(id):
+    return route_revision_quiz.get_revision_quiz_id(id=id)
+
+@app.route('/revision/quiz/update', methods=['PUT'])
+def update_revision_quiz():
+    return route_revision_quiz.update_revision_quiz(request=request)
+
+@app.route('/revision/quiz/delete/<int:id>', methods=['DELETE'])
+def delete_revision_quiz(id):
+    return route_revision_quiz.delete_revision_quiz(id=id)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
